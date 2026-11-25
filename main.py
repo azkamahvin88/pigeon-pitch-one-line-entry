@@ -43,6 +43,16 @@ def main() -> None:
         raise ValueError("entry must be a single line")
     if LINE != LINE.strip():
         raise ValueError("entry must not start or end with whitespace")
+    # The brief weighs tight writing ("every word earning its place"): reject
+    # control characters and double spaces, so padding cannot sneak into the
+    # pitch, and require the pitch to open by addressing its investors.
+    for ch in LINE:
+        if ord(ch) < 32 or ord(ch) == 127:
+            raise ValueError("entry must not contain control characters")
+    if "  " in LINE:
+        raise ValueError("entry must not contain double spaces")
+    if not LINE.startswith("Investors"):
+        raise ValueError("pitch must open by addressing its investors")
     length = len(LINE)
     if length < 1 or length > 200:
         raise ValueError(f"entry is {length} characters; the gate needs 1-200")
